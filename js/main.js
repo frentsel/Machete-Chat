@@ -6,7 +6,7 @@ var http = {
     },
     get: function (path, params) {
 
-        if(!this.ajaxLoad) return false;
+        if (!this.ajaxLoad) return false;
 
         var _this = this;
 
@@ -17,11 +17,11 @@ var http = {
                 type: 'get',
                 dataType: 'json',
                 data: params,
-                beforeSend: function() {
+                beforeSend: function () {
                     _this.ajaxLoad = false;
                     _this.ajaxSpinner(true);
                 },
-                complete: function(){
+                complete: function () {
                     setTimeout(function () {
                         _this.ajaxLoad = true;
                         _this.ajaxSpinner(false);
@@ -41,7 +41,7 @@ var Render = {
     scrollToElement: function (id) {
 
         var index = $('#' + id).index(),
-            messages = $('.message:lt('+index+')'),
+            messages = $('.message:lt(' + index + ')'),
             offsetTop = 0;
 
         // Calculating total height of new messages
@@ -54,7 +54,7 @@ var Render = {
     _tpl: function (template, data) {
 
         $.each(data, function (key, val) {
-            template = template.split('{'+key+'}').join(val || '');
+            template = template.split('{' + key + '}').join(val || '');
         });
 
         return template.replace(/{[^}]+}/g, '');
@@ -62,7 +62,7 @@ var Render = {
     createItem: function (el) {
 
         var tpl = $('#messageTpl').html().trim();
-        el.type = (el.user === Chat.settings.userName) ? 'you': '';
+        el.type = (el.user === Chat.settings.userName) ? 'you' : '';
         return this._tpl(tpl, el);
     },
     loadMore: function (messages) {
@@ -111,15 +111,15 @@ var Render = {
     },
     init: function () {
 
-        $('h1').text("User: "+Chat.settings.userName);
+        $('h1').text("User: " + Chat.settings.userName);
 
-        $("#message").on('keyup', function(event){
-            if(event.keyCode == 13 && this.value.trim().length)
+        $("#message").on('keyup', function (event) {
+            if (event.keyCode == 13 && this.value.trim().length)
                 Chat.send();
         });
 
-        $("#messagesBlock").on("scroll",function() {
-            if($(this).scrollTop() <= 1)
+        $("#messagesBlock").on("scroll", function () {
+            if ($(this).scrollTop() <= 1)
                 Chat.loadMore();
         });
     }
@@ -131,19 +131,23 @@ var Chat = (function () {
             userName: '',
             limit: 15
         },
-        url = "ws://"+window.location.hostname+":8080/alexander.frentsel/chat/server.php",
-        Socket = new ReconnectingWebSocket(url),
+        // url = "ws://" + window.location.hostname + ":8080/alexander.frentsel/chat/server.php",
+        // socket = new ReconnectingWebSocket(url),
+        socket,
         Player = document.getElementById('player');
 
     var input = function (obj) {
-        Socket.send(JSON.stringify({
-            message: obj.value.trim(),
-            user: settings.userName,
-            type: 'input'
-        }));
+
+        socket.emit(
+            'new messages',
+            JSON.stringify({
+                message: obj.value.trim(),
+                user: settings.userName,
+                type: 'input'
+            }));
     };
 
-    var pencil = new function(){
+    var pencil = new function () {
 
         var activity = {};
         this.show = function (data) {
@@ -216,12 +220,12 @@ var Chat = (function () {
             type: 'message'
         };
 
-        Socket.send(JSON.stringify(data));
+        socket.send(JSON.stringify(data));
 
         Render.reset();
     };
 
-    var getFirstMessages = function(){
+    var getFirstMessages = function () {
 
         var params = {
             getLast: true,
@@ -236,23 +240,56 @@ var Chat = (function () {
 
     var init = function (_settings) {
 
+        // var ipRoute = 'http://192.168.1.101:8080';
+        var ipRoute = 'http://192.168.1.140:1111';
+
+        // New connections
+        socket = io(ipRoute);
+
+        socket.on('new messages', function (data) {
+
+            console.info("new socket data: ", data);
+
+            if (!data) return;
+            for (var i = 0; i < data.length; i++) {
+                $('.messageBoard').append("<p>" + data[i] + "</p>");
+            }
+
+            // var data = JSON.parse(ev.data);
+            messagesAdd(data);
+
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            var sendBtn = document.getElementById('smbBtn');
+            var messageForm = $('#messageForm');
+
+            sendBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                socket.emit('send message', messageForm.val());
+            });
+
+        });
+
         $.extend(settings, _settings);
 
-        Socket.onmessage = function(ev) {
+        /*
+         socket.onmessage = function (ev) {
 
-            var data = JSON.parse(ev.data);
-            messagesAdd(data);
-        };
+         var data = JSON.parse(ev.data);
+         messagesAdd(data);
+         };
 
-        Socket.onopen = function(ev) {
-            console.info('Socket.onopen: ', ev);
-        };
-        Socket.onerror = function(ev){
-            console.info('Socket.onerror: ', ev);
-        };
-        Socket.onclose = function(ev){
-            console.info('Socket.onclose: ', ev);
-        };
+         socket.onopen = function (ev) {
+         console.info('socket.onopen: ', ev);
+         };
+         socket.onerror = function (ev) {
+         console.info('socket.onerror: ', ev);
+         };
+         socket.onclose = function (ev) {
+         console.info('socket.onclose: ', ev);
+         };*/
 
         Render.init();
 
