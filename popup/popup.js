@@ -14,8 +14,12 @@
     /**
      * @ipRoute = Address of the router;
      * */
+    /**
+     * Dcodeit - 192.168.1.199
+     * My Route - 192.168.1.101
+     * */
 
-    var ipRoute = 'http://192.168.1.199:8080';
+    var ipRoute = 'http://192.168.1.101:8080';
 
     // New connections
     var socket = io(ipRoute);
