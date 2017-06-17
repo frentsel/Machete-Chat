@@ -132,7 +132,7 @@ var Chat = (function () {
             limit: 15
         },
         socket,
-        Player = document.getElementById('player');
+        Player = $('#player')[0];
 
     var input = function (obj) {
 
@@ -238,29 +238,15 @@ var Chat = (function () {
 
     var init = function (_settings) {
 
-        /**
-         * @ipRoute = Address of the router;
-         * */
-        /**
-         * Dcodeit - 192.168.1.199
-         * My Route - 192.168.1.101
-         * */
-
-        var ipRoute = 'http://192.168.1.101:8080';
+        $.extend(settings, _settings);
 
         // New connections
-        socket = io(ipRoute);
+        socket = io(settings.ipRoute);
 
         socket.on('new messages', function (data) {
-
             if(!data) return;
-
-            data.map(function (message) {
-                messagesAdd(message);
-            });
+            data.map(messagesAdd);
         });
-
-        $.extend(settings, _settings);
 
         Render.init();
 
