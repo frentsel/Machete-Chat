@@ -1,6 +1,6 @@
 $(function () {
     Chat.init({
-        userName: 'Alex',
+        userName: 'Nikolay',
         limit: 20,
         dataServer: 'http://dcodeit.net/alexander.frentsel/chat/data.php',
         /**

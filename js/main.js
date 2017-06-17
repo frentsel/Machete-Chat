@@ -48,6 +48,8 @@ var Render = {
     },
     getFirstMessages: function (messages) {
 
+        if(!messages) return;
+
         var item,
             messagesBlock = $('#messagesBlock'),
             _this = this;
@@ -72,11 +74,6 @@ var Render = {
 
         $('h1').text("User: " + Chat.settings.userName);
 
-        $('#message').on('keyup', function (event) {
-            if (event.keyCode == 13 && this.value.trim().length)
-                Chat.send();
-        });
-
         $("#messagesBlock").on("scroll", function () {
             if ($(this).scrollTop() <= 1) {
                 /** Need to rewrite this point */
@@ -96,7 +93,6 @@ var Chat = (function () {
         Player = $('#player')[0];
 
     var input = function (obj) {
-
         socket.emit(
             'new messages',
             JSON.stringify({
@@ -110,12 +106,9 @@ var Chat = (function () {
 
         var activity = {};
         this.show = function (data) {
-
-            if (data.user === settings.userName) {
-                return false;
-            }
-
-            if (data.type !== 'input') {
+            console.log(settings.userName);
+            console.log(data.user);
+            if (data.user === settings.userName && data.type === 'input') {
                 return false;
             }
 
@@ -136,15 +129,15 @@ var Chat = (function () {
 
     var messagesAdd = function (data) {
 
+        if(!data) return;
+
         if (data.type === 'input') {
             pencil.show(data);
             return false;
         }
 
+        /** Draw message */
         if (data.type === 'message' && data.user !== null) {
-            if (data.user !== settings.userName) {
-                Player.play();
-            }
             Render.messagesAdd(data);
         }
 
@@ -195,17 +188,28 @@ var Chat = (function () {
         socket = io(settings.ipRoute);
 
         /** Get all messages on present session -> and render it */
-        socket.on('get messages', function (data) {
-            console.log('get messages', data);
-            if(!data) return;
-            Render.getFirstMessages(data);
-        });
+        socket.on('get messages', Render.getFirstMessages.bind(Render));
 
         /** If new message -> render it */
-        socket.on('new message', function (data) {
-            console.log('new message', data);
-            if(!data) return;
-            messagesAdd(data);
+        socket.on('new message', messagesAdd);
+
+        /** When user typing*/
+        socket.on('input', pencil.show);
+
+
+        $('#message').on('keyup', function (event) {
+
+            if (event.keyCode == 13 && this.value.trim().length) {
+                Chat.send();
+                return false;
+            }
+
+            Chat.socket().emit('typing', {
+                user: settings.userName,
+                message: this.value,
+                type: 'input'
+            });
+
         });
 
         Render.init();
@@ -214,6 +218,9 @@ var Chat = (function () {
 
     return {
         settings: settings,
+        socket: function () {
+            return socket;
+        },
         input: input,
         loadMore: loadMore,
         send: send,

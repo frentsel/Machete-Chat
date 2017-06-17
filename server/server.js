@@ -36,6 +36,11 @@ io.sockets.on('connection', function(socket){
         io.sockets.emit('new message', data)
     });
 
+    socket.on('typing', function (data) {
+        console.log(data);
+       io.sockets.emit('input', data)
+    });
+
     socket.on('disconnect', function(data) {
         connections.splice(connections.indexOf(data));
         console.log('Some user has disconnect. Total count users: ' + connections.length);
