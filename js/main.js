@@ -1,56 +1,16 @@
-// http module
-var http = {
-    ajaxLoad: true,
-    ajaxSpinner: function (status) {
-        $('body').toggleClass('loadMore', status);
-    },
-    get: function (path, params) {
-
-        if (!this.ajaxLoad) return false;
-
-        var _this = this;
-
-        return new Promise(function (resolve, reject) {
-
-            $.ajax({
-                url: path,
-                type: 'get',
-                dataType: 'json',
-                data: params,
-                beforeSend: function () {
-                    _this.ajaxLoad = false;
-                    _this.ajaxSpinner(true);
-                },
-                complete: function () {
-                    setTimeout(function () {
-                        _this.ajaxLoad = true;
-                        _this.ajaxSpinner(false);
-                    }, 100);
-                },
-                success: resolve,
-                error: function (e) {
-                    console.error(e);
-                    reject(e);
-                }
-            });
-        });
-    }
-};
-
 var Render = {
-    scrollToElement: function (id) {
 
+    scrollToElement: function (id) {
         var index = $('#' + id).index(),
             messages = $('.message:lt(' + index + ')'),
             offsetTop = 0;
-
         // Calculating total height of new messages
         messages.each(function (n, el) {
             offsetTop += $(this).outerHeight(true);
         });
-
         $('#messagesBlock').scrollTop(offsetTop);
     },
+
     _tpl: function (template, data) {
 
         $.each(data, function (key, val) {
@@ -59,11 +19,10 @@ var Render = {
 
         return template.replace(/{[^}]+}/g, '');
     },
-    createItem: function (el) {
-
+    createItem: function (message) {
         var tpl = $('#messageTpl').html().trim();
-        el.type = (el.user === Chat.settings.userName) ? 'you' : '';
-        return this._tpl(tpl, el);
+        message.type = (message.user === Chat.settings.userName) ? 'you' : '';
+        return this._tpl(tpl, message);
     },
     loadMore: function (messages) {
 
@@ -119,8 +78,10 @@ var Render = {
         });
 
         $("#messagesBlock").on("scroll", function () {
-            if ($(this).scrollTop() <= 1)
+            if ($(this).scrollTop() <= 1) {
+                /** Need to rewrite this point */
                 Chat.loadMore();
+            }
         });
     }
 };
@@ -192,22 +153,24 @@ var Chat = (function () {
 
     var loadMore = function () {
 
-        var params = {
-            getLast: true,
-            offset: $('#messagesBlock').find('.message').size(),
-            limit: settings.limit,
-            t: (new Date()).getTime()
-        };
+        console.log('load More');
 
-        http.get('http://dcodeit.net/alexander.frentsel/chat/data.php', params)
-            .then(function (_data) {
-
-                if (_data.length === 0)
-                    Chat.loadMore = function () {
-                    };
-
-                Render.loadMore(_data);
-            });
+        // var params = {
+        //     getLast: true,
+        //     offset: $('#messagesBlock').find('.message').size(),
+        //     limit: settings.limit,
+        //     t: (new Date()).getTime()
+        // };
+        //
+        // http.get('http://dcodeit.net/alexander.frentsel/chat/data.php', params)
+        //     .then(function (_data) {
+        //
+        //         if (_data.length === 0)
+        //             Chat.loadMore = function () {
+        //             };
+        //
+        //         Render.loadMore(_data);
+        //     });
     };
 
     var send = function () {
@@ -218,39 +181,35 @@ var Chat = (function () {
             type: 'message'
         };
 
-        socket.emit('send message', JSON.stringify(data));
-
+        socket.emit('send message', data);
         Render.reset();
     };
 
-    var getFirstMessages = function () {
 
-        var params = {
-            getLast: true,
-            offset: 0,
-            limit: 20,
-            t: (new Date()).getTime()
-        };
-
-        http.get('http://dcodeit.net/alexander.frentsel/chat/data.php', params)
-            .then(Render.getFirstMessages.bind(Render));
-    };
-
+    /** Socket initialization and logic */
     var init = function (_settings) {
 
         $.extend(settings, _settings);
 
-        // New connections
+        /** Setup new WS connection */
         socket = io(settings.ipRoute);
 
-        socket.on('new messages', function (data) {
+        /** Get all messages on present session -> and render it */
+        socket.on('get messages', function (data) {
+            console.log('get messages', data);
             if(!data) return;
-            data.map(messagesAdd);
+            Render.getFirstMessages(data);
+        });
+
+        /** If new message -> render it */
+        socket.on('new message', function (data) {
+            console.log('new message', data);
+            if(!data) return;
+            messagesAdd(data);
         });
 
         Render.init();
 
-        getFirstMessages();
     };
 
     return {
