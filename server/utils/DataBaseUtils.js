@@ -4,23 +4,26 @@ var Messages = require('../models/Messages');
 
 
 var db = {
-    connect: function ()
-    {
+    connect: function (){
         mongoose.Promise = global.Promise;
         mongoose.connect('mongodb://localhost/myappdatabase');
 
     },
-    addMessage: function (data)
-    {
+    addMessage: function (data){
         var newMessage = Messages({
             user: data.user,
-            message:  data.message
+            message:  data.message,
+            id: data.id,
+            time: data.time
         });
         newMessage.save(function (err)
         {
             if(err) throw  err;
             console.log('New message')
         })
+    },
+    getMessages: function () {
+        console.log(Messages.find().limit(20));
     }
     
 };
