@@ -59,9 +59,7 @@ var Render = {
             messagesBlock.append(item);
         });
 
-        setTimeout(function () {
-            messagesBlock.scrollTop(messagesBlock[0].scrollHeight);
-        }, 100);
+        messagesBlock.scrollTop(messagesBlock[0].scrollHeight);
     },
     reset: function () {
         $('#message').val('');
@@ -135,19 +133,11 @@ var Chat = (function () {
 
     var loadMore = function () {
         var params = {
-            offset: $('#messagesBlock').find('.message').size(),
+            offset: $('#messagesBlock').find('.message').length,
             limit: settings.limit
         };
 
         socket.emit('getPage', params);
-
-        socket.on('_getPage', function (_data) {
-            console.info("getPage: ", _data);
-            if (_data.length === 0)
-                Chat.loadMore = function () {};
-
-            Render.loadMore(_data);
-        });
     };
 
     var send = function () {
@@ -181,6 +171,15 @@ var Chat = (function () {
 
         /** When user typing*/
         socket.on('input', pencil.show);
+
+        socket.on('_getPage', function (_data) {
+
+            if (_data.length === 0) {
+                return false;
+            }
+
+            Render.loadMore(_data);
+        });
 
 
         $("#messagesBlock").on("scroll", function () {
