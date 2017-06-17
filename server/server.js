@@ -1,5 +1,7 @@
 var express = require('express');
 var app = express();
+var moment = require('moment');
+var shortid = require('shortid');
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
@@ -21,11 +23,15 @@ io.sockets.on('connection', function(socket){
     socket.on('send message', function(data) {
 
         /** Data = {
+          * _id = number;
           * message: '',
           * user: 'Alex',
-          * type: 'message'}
+          * type: 'message'
+          * time: LT format
+          * }
           */
-
+        data._id = shortid.generate();
+        data.time = moment().format('LT');
         messages.push(data);
         io.sockets.emit('new message', data)
     });
