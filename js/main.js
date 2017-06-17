@@ -81,8 +81,7 @@ var Chat = (function () {
             userName: '',
             limit: 15
         },
-        socket,
-        Player = $('#player')[0];
+        socket;
 
     var input = function (obj) {
         socket.emit(
@@ -98,8 +97,6 @@ var Chat = (function () {
 
         var activity = {};
         this.show = function (data) {
-            console.log(settings.userName);
-            console.log(data.user);
             if (data.user === settings.userName && data.type === 'input') {
                 return false;
             }
@@ -137,13 +134,13 @@ var Chat = (function () {
     };
 
     var loadMore = function () {
-
         var params = {
             offset: $('#messagesBlock').find('.message').size(),
             limit: settings.limit
         };
 
         socket.emit('getPage', params);
+
         socket.on('_getPage', function (_data) {
             console.info("getPage: ", _data);
             if (_data.length === 0)
@@ -188,7 +185,6 @@ var Chat = (function () {
 
         $("#messagesBlock").on("scroll", function () {
             if ($(this).scrollTop() <= 1) {
-                /** Need to rewrite this point */
                 Chat.loadMore();
             }
         });
