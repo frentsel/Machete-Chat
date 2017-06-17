@@ -113,10 +113,13 @@ var Render = {
 
         $('h1').text("User: " + Chat.settings.userName);
 
-        $("#message").on('keyup', function (event) {
-            if (event.keyCode == 13 && this.value.trim().length)
+        document.addEventListener('keyup', function (event) {
+
+            console.info("event: ", event);
+
+            if (event.keyCode == 13 && $('#message').val().trim().length)
                 Chat.send();
-        });
+        }, true);
 
         $("#messagesBlock").on("scroll", function () {
             if ($(this).scrollTop() <= 1)
@@ -263,23 +266,6 @@ var Chat = (function () {
         });
 
         $.extend(settings, _settings);
-
-        /*
-         socket.onmessage = function (ev) {
-
-         var data = JSON.parse(ev.data);
-         messagesAdd(data);
-         };
-
-         socket.onopen = function (ev) {
-         console.info('socket.onopen: ', ev);
-         };
-         socket.onerror = function (ev) {
-         console.info('socket.onerror: ', ev);
-         };
-         socket.onclose = function (ev) {
-         console.info('socket.onclose: ', ev);
-         };*/
 
         Render.init();
 
