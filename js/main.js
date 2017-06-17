@@ -1,5 +1,4 @@
 var Render = {
-
     scrollToElement: function (id) {
         var index = $('#' + id).index(),
             messages = $('.message:lt(' + index + ')'),
@@ -10,7 +9,6 @@ var Render = {
         });
         $('#messagesBlock').scrollTop(offsetTop);
     },
-
     _tpl: function (template, data) {
 
         $.each(data, function (key, val) {
@@ -21,6 +19,9 @@ var Render = {
     },
     createItem: function (message) {
         var tpl = $('#messageTpl').html().trim();
+        message.time = moment(new Date(message.time * 1000), "YYYYMMDD")
+            .startOf('second')
+            .fromNow();
         message.type = (message.user === Chat.settings.userName) ? 'you' : '';
         return this._tpl(tpl, message);
     },
@@ -70,6 +71,7 @@ var Render = {
     },
     init: function () {
         $('h1').text("User: " + Chat.settings.userName);
+        moment.lang(window.navigator.userLanguage || window.navigator.language);
     }
 };
 
@@ -159,6 +161,8 @@ var Chat = (function () {
 
         $.extend(settings, _settings);
 
+        Render.init();
+
         /** Setup new WS connection */
         socket = io(settings.ipRoute);
 
@@ -182,7 +186,6 @@ var Chat = (function () {
             Render.loadMore(_data);
         });
 
-
         $("#messagesBlock").on("scroll", function () {
             if ($(this).scrollTop() <= 1) {
                 Chat.loadMore();
@@ -203,8 +206,6 @@ var Chat = (function () {
             });
 
         });
-
-        Render.init();
 
     };
 
