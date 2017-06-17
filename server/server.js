@@ -40,7 +40,7 @@ io.sockets.on('connection', function(socket){
     socket.on('send message', function(data) {
 
         data.id = shortid.generate();
-        data.time = moment().format('LT');
+        data.time = moment().unix();
         data._id = messages.length + 1;
         io.sockets.emit('new message', data);
         messages.push(data);

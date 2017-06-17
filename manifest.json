@@ -26,9 +26,11 @@
     "permissions": [
         "webRequest",
         "webRequestBlocking",
+        "notifications",
         "*://*/*",
         "proxy",
         "storage",
+        "alarms",
         "tabs",
         "\u003Call_urls>"
     ],
