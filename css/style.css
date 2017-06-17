@@ -141,7 +141,7 @@ button {
 div.message {
     min-height: 34px;
     overflow: hidden;
-    padding-top: 16px;
+    padding: 4px 0;
 }
 
 div.message:last-child,
