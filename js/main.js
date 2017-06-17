@@ -199,7 +199,7 @@ var Chat = (function () {
             t: (new Date()).getTime()
         };
 
-        http.get('http://dcodeit.net/alexander.frentsel/chat/data.php', params)
+        http.get(settings.dataServer, params)
             .then(function (_data) {
 
                 if (_data.length === 0)
@@ -232,7 +232,7 @@ var Chat = (function () {
             t: (new Date()).getTime()
         };
 
-        http.get('http://dcodeit.net/alexander.frentsel/chat/data.php', params)
+        http.get(settings.dataServer, params)
             .then(Render.getFirstMessages.bind(Render));
     };
 
