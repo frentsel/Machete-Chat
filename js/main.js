@@ -99,6 +99,7 @@ var Chat = (function () {
                 return false;
             }
 
+            $('#player')[0].play();
             clearTimeout(activity);
             activity = setTimeout(function () {
                 pencil.hide();
