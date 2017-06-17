@@ -254,14 +254,10 @@ var Chat = (function () {
         socket.on('new messages', function (data) {
 
             if(!data) return;
-            for(var i = 0; i < data.length; i++) {
-                $('#messagesBlock').append("<p>" + data[i] + "</p>");
-            }
 
-            messagesAdd(data);
-
-            var messagesBlock = $('#messagesBlock');
-            messagesBlock.append("<p>" + data.msg + "</p>");
+            data.map(function (message) {
+                messagesAdd(message);
+            });
         });
 
         $.extend(settings, _settings);
