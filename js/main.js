@@ -131,8 +131,6 @@ var Chat = (function () {
             userName: '',
             limit: 15
         },
-        // url = "ws://" + window.location.hostname + ":8080/alexander.frentsel/chat/server.php",
-        // socket = new ReconnectingWebSocket(url),
         socket,
         Player = document.getElementById('player');
 
@@ -220,7 +218,7 @@ var Chat = (function () {
             type: 'message'
         };
 
-        socket.send(JSON.stringify(data));
+        socket.emit('send message', JSON.stringify(data));
 
         Render.reset();
     };
@@ -240,36 +238,28 @@ var Chat = (function () {
 
     var init = function (_settings) {
 
-        // var ipRoute = 'http://192.168.1.101:8080';
-        var ipRoute = 'http://192.168.1.140:1111';
+        /**
+         * @ipRoute = Address of the router;
+         * */
+        /**
+         * Dcodeit - 192.168.1.199
+         * My Route - 192.168.1.101
+         * */
+
+        var ipRoute = 'http://192.168.1.101:8080';
 
         // New connections
         socket = io(ipRoute);
 
         socket.on('new messages', function (data) {
 
-            console.info("new socket data: ", data);
-
-            if (!data) return;
-            for (var i = 0; i < data.length; i++) {
-                $('.messageBoard').append("<p>" + data[i] + "</p>");
+            if(!data) return;
+            for(var i = 0; i < data.length; i++) {
+                $('#messagesBlock').append("<p>" + data[i] + "</p>");
             }
 
-            // var data = JSON.parse(ev.data);
-            messagesAdd(data);
-
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-
-            var sendBtn = document.getElementById('smbBtn');
-            var messageForm = $('#messageForm');
-
-            sendBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                socket.emit('send message', messageForm.val());
-            });
-
+            var messagesBlock = $('#messagesBlock');
+            messagesBlock.append("<p>" + data.msg + "</p>");
         });
 
         $.extend(settings, _settings);
