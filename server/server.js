@@ -31,14 +31,17 @@ io.sockets.on('connection', function(socket){
     });
 
     socket.on('getPage', function (params) {
-        socket.emit('_getPage',messages.splice(params.offset, params.limit));
+        var offset = parseInt(params.offset),
+            limit = parseInt(params.limit),
+            data = messages.slice(   - offset - limit,   - offset  );
+        socket.emit('_getPage', data);
     });
 
     socket.on('send message', function(data) {
 
         data.id = shortid.generate();
         data.time = moment().format('LT');
-
+        data._id = messages.length + 1;
         io.sockets.emit('new message', data);
         messages.push(data);
     });
