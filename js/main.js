@@ -71,15 +71,7 @@ var Render = {
         $('.pencil').toggle(status);
     },
     init: function () {
-
         $('h1').text("User: " + Chat.settings.userName);
-
-        $("#messagesBlock").on("scroll", function () {
-            if ($(this).scrollTop() <= 1) {
-                /** Need to rewrite this point */
-                Chat.loadMore();
-            }
-        });
     }
 };
 
@@ -146,24 +138,19 @@ var Chat = (function () {
 
     var loadMore = function () {
 
-        console.log('load More');
+        var params = {
+            offset: $('#messagesBlock').find('.message').size(),
+            limit: settings.limit
+        };
 
-        // var params = {
-        //     getLast: true,
-        //     offset: $('#messagesBlock').find('.message').size(),
-        //     limit: settings.limit,
-        //     t: (new Date()).getTime()
-        // };
-        //
-        // http.get('http://dcodeit.net/alexander.frentsel/chat/data.php', params)
-        //     .then(function (_data) {
-        //
-        //         if (_data.length === 0)
-        //             Chat.loadMore = function () {
-        //             };
-        //
-        //         Render.loadMore(_data);
-        //     });
+        socket.emit('getPage', params);
+        socket.on('_getPage', function (_data) {
+            console.info("getPage: ", _data);
+            if (_data.length === 0)
+                Chat.loadMore = function () {};
+
+            Render.loadMore(_data);
+        });
     };
 
     var send = function () {
@@ -187,8 +174,10 @@ var Chat = (function () {
         /** Setup new WS connection */
         socket = io(settings.ipRoute);
 
+        socket.emit('getAll', settings.limit );
+
         /** Get all messages on present session -> and render it */
-        socket.on('get messages', Render.getFirstMessages.bind(Render));
+        socket.on('_getAll', Render.getFirstMessages.bind(Render));
 
         /** If new message -> render it */
         socket.on('new message', messagesAdd);
@@ -196,6 +185,13 @@ var Chat = (function () {
         /** When user typing*/
         socket.on('input', pencil.show);
 
+
+        $("#messagesBlock").on("scroll", function () {
+            if ($(this).scrollTop() <= 1) {
+                /** Need to rewrite this point */
+                Chat.loadMore();
+            }
+        });
 
         $('#message').on('keyup', function (event) {
 

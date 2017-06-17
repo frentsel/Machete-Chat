@@ -4,6 +4,10 @@ var moment = require('moment');
 var shortid = require('shortid');
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
+var fs = require('fs');
+var db = require('./utils/DataBaseUtils');
+
+db.connect();
 
 var users = [],
     connections = [],
@@ -16,9 +20,14 @@ io.sockets.on('connection', function(socket){
     connections.push(socket);
     console.log('New has connect. Total count users: ' + connections.length);
 
-    // io.sockets.emit('get messages', messages);
+    socket.on('getAll', function (limit) {
+        var messages = db.getMessages();
+        // socket.emit('_getAll', messages.slice(-(limit)));
+    });
 
-    socket.emit('get messages', messages);
+    socket.on('getPage', function (params) {
+        socket.emit('_getPage', messages.slice(params.offset, params.limit));
+    });
 
     socket.on('send message', function(data) {
 
@@ -30,14 +39,17 @@ io.sockets.on('connection', function(socket){
           * time: LT format
           * }
           */
-        data._id = shortid.generate();
+
+        data.id = shortid.generate();
         data.time = moment().format('LT');
-        messages.push(data);
-        io.sockets.emit('new message', data)
+
+        io.sockets.emit('new message', data);
+
+        db.addMessage(data);
+
     });
 
     socket.on('typing', function (data) {
-        console.log(data);
        io.sockets.emit('input', data)
     });
 
