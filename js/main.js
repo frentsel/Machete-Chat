@@ -114,9 +114,6 @@ var Render = {
         $('h1').text("User: " + Chat.settings.userName);
 
         document.addEventListener('keyup', function (event) {
-
-            console.info("event: ", event);
-
             if (event.keyCode == 13 && $('#message').val().trim().length)
                 Chat.send();
         }, true);
@@ -260,6 +257,8 @@ var Chat = (function () {
             for(var i = 0; i < data.length; i++) {
                 $('#messagesBlock').append("<p>" + data[i] + "</p>");
             }
+
+            messagesAdd(data);
 
             var messagesBlock = $('#messagesBlock');
             messagesBlock.append("<p>" + data.msg + "</p>");
