@@ -1,0 +1,36 @@
+{
+    "background": {
+        "scripts": [
+            "js/background.js"
+        ]
+    },
+    "browser_action": {
+        "default_icon": "res/vk16.png",
+        "default_popup": "popup/popup.html"
+    },
+    "commands": {
+        "_execute_browser_action": {
+            "suggested_key": {
+                "default": "Alt+Shift+V"
+            }
+        }
+    },
+    "icons": {
+        "128": "res/vk128.png",
+        "16": "res/vk16.png",
+        "48": "res/vk48.png"
+    },
+    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsUdqiE4ff4tYOsGPe8J585iFUC2zJcviJNaLfAkEbfuAdMOBTxYjsnfhAu4XT5ucfPfkoD9PfBd+padw/YGw/iDzkUbMLpwyhhl9hvQe+wGYEOtnUUGh9+iCie7X14n5iJ51pInjF5x17ZOY+p9KCq0ft63cvLIm47VA0l1k3+kX44n5tMZijk1N0E0lk0CiNQTWN201DS4V0fxyrgzZQi1bqEI3o29TNlYgn6Slic+e+LSVZEa1gLAs67RLpEmYPjc+fvFUVO8qD+Im16HENTNUJy+eZ5bDgkabyzEQI7VruoqyYGZPpHCqiuKyqvtwV0bRYfhEUsQJAZql47sBlwIDAQAB",
+    "manifest_version": 2,
+    "name": "Hackathon",
+    "permissions": [
+        "webRequest",
+        "webRequestBlocking",
+        "*://*/*",
+        "proxy",
+        "storage",
+        "tabs",
+        "\u003Call_urls>"
+    ],
+    "version": "0.1"
+}

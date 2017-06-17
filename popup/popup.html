@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset='utf-8'/>
+    <link rel="stylesheet" href="../css/perfect-scrollbar.min.css?v=1.0.1">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../libs/jquery-2.1.1.min.js"></script>
+    <script src="../libs/socket.js"></script>
+    <script src="../js/reconnecting-websocket.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="popup.js"></script>
+</head>
+<body>
+
+<div id="main">
+    <h1>User: </h1>
+    <div id="messagesBlock"></div>
+    <img src="../img/ajax-loader.gif" alt="loading" class="pencil">
+    <textarea id="message" placeholder="Enter your message..." oninput="Chat.input(this)"></textarea>
+    <div id="preview"></div>
+    <!--<div class="ajaxLoader"></div>-->
+</div>
+
+<audio id="player">
+    <source src="../mp3/message.mp3" type="audio/mpeg">
+</audio>
+
+<script type="text/html-template" id="messageTpl">
+    <div class="message {type}" id="{id}">
+        <div class="user">
+            <b>{user}</b>
+            <small>{time}</small>
+        </div>
+        <div class="text">{message}</div>
+    </div>
+</script>
+
+</body>
+</html>

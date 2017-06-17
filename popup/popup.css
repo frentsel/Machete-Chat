@@ -1,0 +1,107 @@
+/*html, body {*/
+    /*margin: 0;*/
+    /*background: #edeef0;*/
+/*}*/
+
+/*body {*/
+    /*background: #edeef0;*/
+    /*color: #000;*/
+    /*margin: 0;*/
+    /*padding: 0;*/
+    /*direction: ltr;*/
+    /*font-size: 13px;*/
+    /*font-family: -apple-system,BlinkMacSystemFont,Roboto,Open Sans,Helvetica Neue,sans-serif;*/
+    /*line-height: 1.154;*/
+    /*font-weight: 400;*/
+    /*-webkit-font-smoothing: subpixel-antialiased;*/
+    /*-moz-osx-font-smoothing: auto;*/
+/*}*/
+
+/*img {*/
+    /*width: 100%;*/
+    /*margin-bottom: 5px;*/
+/*}*/
+
+/*.block {*/
+    /*padding: 17px 20px 19px;*/
+    /*margin: 15px;*/
+    /*word-wrap: break-word;*/
+    /*overflow-y: auto;*/
+    /*width: 350px;*/
+    /*position: relative;*/
+    /*background: #fff;*/
+    /*border-radius: 2px;*/
+    /*box-shadow: 0 1px 0 0 #d7d8db, 0 0 0 1px #e3e4e8;*/
+/*}*/
+
+/*.postText {*/
+    /*line-height: 18px;*/
+    /*color: #333;*/
+/*}*/
+
+/*#update {*/
+    /*background-color: rgba(253, 253, 201, 0.65);*/
+    /*padding: 2px 5px;*/
+    /*font-family: Roboto, sans-serif;*/
+    /*font-size: 11px;*/
+    /*float: left;*/
+    /*position: absolute;*/
+    /*right: 0;*/
+    /*bottom: 0;*/
+/*}*/
+
+/*.source {*/
+    /*font-weight: bold;*/
+    /*font-size: 13px;*/
+    /*cursor: pointer;*/
+    /*color: #2a5885;*/
+    /*margin-bottom: 5px;*/
+/*}*/
+
+/*.source, .postText, .linkFromPost, .audio {*/
+/*}*/
+
+/*.text {*/
+    /*padding-top: 2px;*/
+    /*padding-bottom: 1px;*/
+    /*font-size: 14px;*/
+    /*font-family: tahoma, arial, verdana, sans-serif, Lucida Sans;*/
+    /*white-space: pre-line;*/
+/*}*/
+
+/*.block .linkFromPost {*/
+    /*float: left;*/
+    /*margin-bottom: 5px;*/
+    /*cursor: pointer;*/
+/*}*/
+
+/*.block .link {*/
+    /*display: inline-block;*/
+    /*margin-bottom: 5px;*/
+    /*cursor: pointer;*/
+/*}*/
+
+/*.block:hover .link {*/
+    /*color: #2C4D89;*/
+/*}*/
+
+/*.block:hover .linkFromPost {*/
+    /*color: #2C4D89;*/
+/*}*/
+
+/*.block:hover a {*/
+    /*color: #2C4D89;*/
+/*}*/
+
+/*.hide {*/
+    /*display: none !important;*/
+/*}*/
+
+/*#isNewses {*/
+    /*padding: 10px;*/
+/*}*/
+
+/*.audioTitle {*/
+    /*color: #2B587A;*/
+    /*font-weight: bold;*/
+/*}*/
