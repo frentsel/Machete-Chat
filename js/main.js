@@ -113,10 +113,10 @@ var Render = {
 
         $('h1').text("User: " + Chat.settings.userName);
 
-        document.addEventListener('keyup', function (event) {
-            if (event.keyCode == 13 && $('#message').val().trim().length)
+        $('#message').on('keyup', function (event) {
+            if (event.keyCode == 13 && this.value.trim().length)
                 Chat.send();
-        }, true);
+        });
 
         $("#messagesBlock").on("scroll", function () {
             if ($(this).scrollTop() <= 1)
