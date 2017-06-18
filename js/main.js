@@ -69,9 +69,17 @@ var Render = {
         $('#preview').toggle(status).text(text || '');
         $('.pencil').toggle(status);
     },
-    init: function () {
-        $('h1').text("User: " + Chat.settings.userName);
-        moment.lang(window.navigator.userLanguage || window.navigator.language);
+    init: function (callback) {
+        $('#main').slideUp(200, function () {
+
+            $('#main').html($('#homeTpl').html()).slideDown(200, function () {
+                $('#message').focus();
+            });
+
+            $('h1').text("User: " + Chat.settings.userName);
+            moment.lang(window.navigator.userLanguage || window.navigator.language);
+            callback();
+        });
     }
 };
 
@@ -161,52 +169,52 @@ var Chat = (function () {
 
         $.extend(settings, _settings);
 
-        Render.init();
+        Render.init(function () {
 
-        /** Setup new WS connection */
-        socket = io(settings.ipRoute);
+            /** Setup new WS connection */
+            socket = io(settings.ipRoute);
 
-        socket.emit('getAll', settings.limit );
+            socket.emit('getAll', settings.limit );
 
-        /** Get all messages on present session -> and render it */
-        socket.on('_getAll', Render.getFirstMessages.bind(Render));
+            /** Get all messages on present session -> and render it */
+            socket.on('_getAll', Render.getFirstMessages.bind(Render));
 
-        /** If new message -> render it */
-        socket.on('new message', messagesAdd);
+            /** If new message -> render it */
+            socket.on('new message', messagesAdd);
 
-        /** When user typing*/
-        socket.on('input', pencil.show);
+            /** When user typing*/
+            socket.on('input', pencil.show);
 
-        socket.on('_getPage', function (_data) {
+            socket.on('_getPage', function (_data) {
 
-            if (_data.length === 0) {
-                return false;
-            }
+                if (_data.length === 0) {
+                    return false;
+                }
 
-            Render.loadMore(_data);
-        });
-
-        $("#messagesBlock").on("scroll", function () {
-            if ($(this).scrollTop() <= 1) {
-                Chat.loadMore();
-            }
-        });
-
-        $('#message').on('keyup', function (event) {
-
-            if (event.keyCode == 13 && this.value.trim().length) {
-                Chat.send();
-                return false;
-            }
-
-            Chat.socket().emit('typing', {
-                user: settings.userName,
-                message: this.value,
-                type: 'input'
+                Render.loadMore(_data);
             });
 
-        });
+            $("#messagesBlock").on("scroll", function () {
+                if ($(this).scrollTop() <= 1) {
+                    Chat.loadMore();
+                }
+            });
 
+            $('#message').on('keyup', function (event) {
+
+                if (event.keyCode == 13 && this.value.trim().length) {
+                    Chat.send();
+                    return false;
+                }
+
+                Chat.socket().emit('typing', {
+                    user: settings.userName,
+                    message: this.value,
+                    type: 'input'
+                });
+
+            });
+        });
     };
 
     return {
