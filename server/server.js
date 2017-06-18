@@ -51,7 +51,9 @@ io.sockets.on('connection', function(socket){
     socket.on('haveNewMessage', function (data){
         console.log('Новый запрос на сообщения от: ', data);
         if(newMessages.length) {
-            socket.emit('_haveNewMessage', newMessages[0]);
+            for(var i = 0; i < newMessages.length; i++) {
+                socket.emit('_haveNewMessage', newMessages[i]);
+            }
             newMessages = [];
         }
     });
