@@ -12,19 +12,20 @@ var connections = [];
 var file = 'data.json';
 
 var messages,
-    _localMessages = [];
+    _localMessages = [],
+    newMessages = [];
 
 jsonfile.readFile(file, function(err, obj) {
     messages = obj;
     _localMessages = obj.slice(0);
 });
 
+
 server.listen(8080);
 
 io.sockets.on('connection', function(socket){
 
     connections.push(socket);
-    console.log('New has connect. Total count users: ' + connections.length);
 
     socket.on('getAll', function (limit) {
         socket.emit('_getAll', messages.slice( -(limit) ));
@@ -38,12 +39,20 @@ io.sockets.on('connection', function(socket){
     });
 
     socket.on('send message', function(data) {
-
         data.id = shortid.generate();
         data.time = moment().unix();
         data._id = messages.length + 1;
         io.sockets.emit('new message', data);
         messages.push(data);
+        newMessages.push(data);
+    });
+
+
+    socket.on('haveNewMessage', function (){
+        if(newMessages.length) {
+            socket.emit('_haveNewMessage', newMessages[0]);
+            newMessages = [];
+        }
     });
 
     setInterval(function () {
@@ -66,7 +75,6 @@ io.sockets.on('connection', function(socket){
 
     socket.on('disconnect', function(data) {
         connections.splice(connections.indexOf(data));
-        console.log('Some user has disconnect. Total count users: ' + connections.length);
     });
 
 });
