@@ -70,6 +70,7 @@ var Render = {
         $('.pencil').toggle(status);
     },
     init: function (callback) {
+
         $('#main').slideUp(200, function () {
 
             $('body').removeClass('intro');

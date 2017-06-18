@@ -17,7 +17,7 @@ body {
     font-size: 14px;
     line-height: normal;
     color: #343537;
-    width: 300px;
+    width: 320px;
     height: 450px;
 }
 
@@ -186,6 +186,17 @@ div.message.last {
     padding-bottom: 10px;
 }
 
+div.message > img {
+    float: left;
+    width: 30px;
+    border-radius: 50%;
+    margin-right: 4px;
+}
+
+.message.you > img {
+    display: none;
+}
+
 .user {
     overflow: hidden;
     float: left;
@@ -218,9 +229,9 @@ div.message.you .user b {
 .text {
     word-break: break-all;
     overflow: hidden;
-    float: left;
+    /*float: left;*/
     width: auto;
-    max-width: 85%;
+    max-width: 80%;
     padding: 5px 8px;
     background: #fff;
     min-height: 34px;
