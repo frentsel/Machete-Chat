@@ -72,6 +72,7 @@ var Render = {
     init: function (callback) {
         $('#main').slideUp(200, function () {
 
+            $('body').removeClass('intro');
             $('#main').html($('#homeTpl').html()).slideDown(200, function () {
                 $('#message').focus();
             });
